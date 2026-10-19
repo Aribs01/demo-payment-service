@@ -11,8 +11,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.transfer.config.OpenApiConfig;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/mock/faults")
+@Tag(name = "Faults", description = "Turn simulated delays and crashes on or off")
+@SecurityRequirement(name = OpenApiConfig.MOCK_ADMIN_KEY)
 @ConditionalOnProperty(
         prefix = "app.mocks",
         name = "enabled",
@@ -29,11 +37,13 @@ public class MockFaultController {
     }
 
     @GetMapping
+    @Operation(summary = "Read the current fault flags")
     public Map<String, Boolean> current() {
         return flags.snapshot();
     }
 
     @PutMapping
+    @Operation(summary = "Replace the fault flags")
     public Map<String, Boolean> replace(@RequestBody FaultSettings settings) {
         flags.replace(
                 settings.fineractDelayAfterCommit(),

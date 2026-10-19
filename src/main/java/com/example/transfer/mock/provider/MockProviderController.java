@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.transfer.config.OpenApiConfig;
 import com.example.transfer.mock.common.MockFaults;
 import com.example.transfer.mock.provider.MockProviderDtos.CallbackCommand;
 import com.example.transfer.mock.provider.MockProviderDtos.PaymentRequest;
@@ -17,8 +18,14 @@ import com.example.transfer.mock.provider.MockProviderDtos.PaymentResponse;
 import com.example.transfer.mock.provider.MockProviderDtos.SettleRequest;
 import com.example.transfer.mock.provider.MockProviderDtos.StatsResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/mock/provider")
+@Tag(name = "Mock provider", description = "Simulated payment submission, settlement, and callbacks")
+@SecurityRequirement(name = OpenApiConfig.MOCK_ADMIN_KEY)
 @ConditionalOnProperty(
         prefix = "app.mocks",
         name = "enabled",
@@ -41,6 +48,7 @@ public class MockProviderController {
     }
 
     @PostMapping("/payments")
+    @Operation(summary = "Accept a payment, or return the existing payment for the same reference")
     public PaymentResponse submit(
             @RequestBody PaymentRequest request,
             @RequestHeader(
@@ -54,6 +62,7 @@ public class MockProviderController {
     }
 
     @GetMapping("/payments/{reference}")
+    @Operation(summary = "Look up a payment")
     public ResponseEntity<PaymentResponse> find(
             @PathVariable String reference
     ) {
@@ -63,6 +72,7 @@ public class MockProviderController {
     }
 
     @PostMapping("/payments/{reference}/settle")
+    @Operation(summary = "Settle a pending payment")
     public PaymentResponse settle(
             @PathVariable String reference,
             @RequestBody SettleRequest request
@@ -71,6 +81,7 @@ public class MockProviderController {
     }
 
     @PostMapping("/payments/{reference}/callbacks")
+    @Operation(summary = "Generate a callback, including duplicate, delayed, or conflicting callbacks")
     public PaymentResponse sendCallback(
             @PathVariable String reference,
             @RequestBody(required = false) CallbackCommand command
@@ -81,6 +92,7 @@ public class MockProviderController {
     }
 
     @GetMapping("/stats")
+    @Operation(summary = "Count accepted payments")
     public StatsResponse stats() {
         return repository.stats();
     }

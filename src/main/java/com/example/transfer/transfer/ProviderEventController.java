@@ -11,12 +11,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.transfer.config.OpenApiConfig;
+import com.example.transfer.transfer.dto.ApiErrorResponse;
 import com.example.transfer.transfer.dto.ProviderEventRequest;
+import com.example.transfer.transfer.dto.ProviderEventResponse;
 import com.example.transfer.transfer.service.ProviderEventService;
 import com.example.transfer.transfer.service.TransferWorkflow;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v2/provider/events")
+@Tag(name = "Provider callbacks", description = "Payment provider status callbacks")
+@SecurityRequirement(name = OpenApiConfig.PROVIDER_SECRET)
 public class ProviderEventController {
 
     private static final Logger log = LoggerFactory.getLogger(ProviderEventController.class);
@@ -33,6 +45,11 @@ public class ProviderEventController {
     }
 
     @PostMapping
+    @Operation(summary = "Receive a provider callback")
+    @ApiResponse(responseCode = "202", description = "Event stored", content = @Content(schema = @Schema(implementation = ProviderEventResponse.class)))
+    @ApiResponse(responseCode = "200", description = "Duplicate event ignored", content = @Content(schema = @Schema(implementation = ProviderEventResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid event", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Missing or wrong provider secret", content = @Content)
     public ResponseEntity<Map<String, String>> receive(
             @RequestBody ProviderEventRequest request
     ) {

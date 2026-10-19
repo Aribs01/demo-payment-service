@@ -6,7 +6,7 @@ spring:
     name: transfer-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/transfers_db
+    url: jdbc:postgresql://localhost:5434/transfers_db
     username: transfers
     password: transfers
 
@@ -37,7 +37,7 @@ management:
 logging:
   level:
     root: INFO
-    com.example.transfers: DEBUG
+    com.example.transfer: DEBUG
 
 integrations:
   fineract:

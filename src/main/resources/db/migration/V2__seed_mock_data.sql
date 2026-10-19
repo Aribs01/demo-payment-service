@@ -6,12 +6,12 @@ INSERT INTO clients (
 (
     '11111111-1111-1111-1111-111111111111',
     'Mock Client 1',
-    'baad8f5d8434341d3f0ef90158bedb74ef9b0093228e81ef264aaf99e74661af'
+    'key-hash-1'
 ),
 (
     '22222222-2222-2222-2222-222222222222',
     'Mock Client 2',
-    'a620ae46abb14dc7ee08193c573cf727d177ab57d6f7932081a351507febd3eb'
+    'key-hash-2'
 );
 
 INSERT INTO client_accounts (
@@ -27,7 +27,7 @@ INSERT INTO client_accounts (
 (
     'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2',
     '22222222-2222-2222-2222-222222222222',
-    '2023456789'
+    '0123456789'
 );
 
 INSERT INTO mock_fineract_accounts (
@@ -44,7 +44,7 @@ INSERT INTO mock_fineract_accounts (
 ),
 (
     'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb2',
-    '2023456789',
+    '0123456789',
     100000.00,
     0.00
 );

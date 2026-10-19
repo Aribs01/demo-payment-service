@@ -27,6 +27,11 @@ spring:
     port: 5672
     username: transfers
     password: transfers
+    connection-timeout: 3s
+    listener:
+      simple:
+        default-requeue-rejected: true
+        missing-queues-fatal: false
 
 management:
   endpoints:
@@ -44,3 +49,11 @@ integrations:
     base-url: http://localhost:3333/mock/fineract
   provider:
     base-url: http://localhost:3333/mock/provider
+
+app:
+  mocks:
+    enabled: true
+    admin-key: ${MOCK_ADMIN_KEY:local-mock-admin-key}
+  provider:
+    callback-secret: ${PROVIDER_CALLBACK_SECRET:local-provider-secret}
+    callback-url: http://localhost:3333/api/v2/provider/events
